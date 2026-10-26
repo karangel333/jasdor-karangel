@@ -1,0 +1,32 @@
+JASDOR KARANGEL — UPDATE KATALOG + DASHBOARD PESANAN
+
+Isi:
+- index.html: situs toko
+- admin.html: dashboard pesanan dikelompokkan menurut lokasi
+- assets/: banner lokal agar HTML tidak berukuran ~8 MB
+- netlify/functions/orders.mjs: menerima order dan menyimpan ke Netlify Blobs
+- package.json: dependency @netlify/blobs
+
+CARA PASANG
+1. Deploy seluruh FOLDER melalui proyek yang terhubung ke Git / Netlify CLI dengan build dependency (npm install).
+   Jangan hanya mengunggah index.html atau memakai drag-and-drop statis: fungsi online membutuhkan deployment Functions.
+2. Pada pengaturan Netlify proyek, tambahkan environment variable JASDOR_ADMIN_TOKEN = token acak yang panjang dan rahasia.
+3. Redeploy setelah environment variable disetel. Backend memerlukan dukungan Netlify Blobs.
+4. Kunjungi https://DOMAIN-MILIKMU/admin.html, login dengan token tadi, lalu klik "Aktifkan alarm order".
+5. Uji pembelian dari HP lain dan cek pesanan yang masuk di dashboard. Pesanan baru tercatat ketika pelanggan mengeklik "Kirim via WhatsApp".
+
+PENTING
+- Order yang tercatat adalah PERMINTAAN / MENUNGGU KONFIRMASI, BUKAN pembayaran sudah berhasil.
+- Bunyi alarm berjalan saat dashboard admin terbuka/aktif. Tidak memanggil nomor telepon dan tidak menjamin bunyi ketika HP terkunci atau browser ditutup.
+- Daftar lokasi default: Tambun, Cibitung, Cikarang, Bekasi, Lainnya. Ubah opsi pada index.html agar sesuai lokasi nyata.
+- Produk dan gambar referensi lama dipertahankan. Beberapa gambar masih di-host pada website pihak ketiga, sehingga bisa terputus dan pengguna harus memastikan izin pemakaiannya.
+- Untuk produksi, lengkapi validasi harga di server, anti-spam/rate limit, dan perlindungan privasi data pelanggan.
+- Jangan letakkan JASDOR_ADMIN_TOKEN di HTML / JS pelanggan.
+
+PEMBARUAN HARGA DAN MENU (26 OKTOBER 2026)
+- Katalog 4 brand dari file HTML yang dikirim tetap dipertahankan (bukan duplikasi langsung database Moulii).
+- Harga normal/coret disimpan sesuai dataset yang tersedia. Harga jual = harga promo dataset + Rp2.000 untuk promo <= Rp20.000, atau + Rp3.000 untuk promo > Rp20.000.
+- Tersedia aturan pada index.html: HARGA_KARANGEL; ubah jika kebijakan harga berubah.
+- Harga coret sengaja disembunyikan jika harga normal <= harga jual Karangel, agar tidak memajang diskon palsu.
+- Data menu/harga situs referensi dapat berubah setiap waktu; TIDAK disinkronisasi live. Audit ulang berdasarkan menu resmi dan persetujuan penggunaan foto pihak ketiga.
+- Catatan: konfigurasi pilihan Large punya harga dan biaya varian berbeda, periksa harga varian sebelum dipublikasikan.
