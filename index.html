@@ -521,26 +521,14 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 
 <div class="section brand-intro" id="pilih-brand">
 <div class="brand-intro-kicker">Mulai pesananmu</div>
-<h2>Pilih Brand Favoritmu</h2>
-<p>Klik satu brand untuk membuka seluruh menu, makanan, dan paket bundling.</p>
+<h2>Kopi Kenangan — Pilih Cabang</h2>
+<p>Pilih Kopi Kenangan, lalu tentukan cabang. Hanya menu yang sudah dikonfirmasi admin untuk cabang tersebut yang dapat dipesan.</p>
 </div>
 
 <div class="brands section">
 <div class="brand" onclick="openBrand('Kopi Kenangan')">
     <img src="https://www.google.com/s2/favicons?sz=256&domain_url=https://kopikenangan.com" class="brand-logo" alt="Logo Kopi Kenangan">
     <h3>Kopi Kenangan</h3>
-</div>
-<div class="brand" onclick="openBrand('Tomoro Coffee')">
-    <img src="https://mouliishop.my.id/gambar/1778409477_IMG_4600.png" class="brand-logo" alt="Logo Tomoro Coffee">
-    <h3>Tomoro Coffee</h3>
-</div>
-<div class="brand" onclick="openBrand('Janji Jiwa')">
-    <img src="https://mouliishop.my.id/gambar/1781226923_IMG_4176.jpeg" class="brand-logo" alt="Logo Janji Jiwa">
-    <h3>Janji Jiwa</h3>
-</div>
-<div class="brand" onclick="openBrand('Fore Coffee')">
-    <img src="https://mouliishop.my.id/gambar/1778410154_IMG_4602.jpeg" class="brand-logo" alt="Logo Fore Coffee">
-    <h3>Fore Coffee</h3>
 </div>
 </div>
 
@@ -583,6 +571,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 
 
 
+<p id="branchMenuInfo" style="max-width:1050px;margin:4px auto;padding:0 18px;color:#956378;font-size:13px" role="status"></p>
 <div id="products" class="products"></div>
 </div>
 
@@ -728,7 +717,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 <div id="lokasiModal" role="dialog" aria-modal="true" aria-labelledby="lokasiModalTitle">
   <div class="lokasi-kotak">
     <div class="lokasi-judul"><button type="button" class="lokasi-close" onclick="tutupModalLokasi()" aria-label="Kembali">‹</button><h2 id="lokasiModalTitle">Pilih Outlet Pengambilan</h2><span>📍</span></div>
-    <p style="font-size:13px;color:#8d7580">Cari cabang sesuai brand. Daftar cabang berasal dari referensi publik dan tidak menunjukkan stok, jam buka langsung, atau layanan pengambilan yang sudah dikonfirmasi.</p>
+    <p style="font-size:13px;color:#8d7580">Cari cabang sesuai brand. Nama cabang merujuk daftar outlet resmi. Menu baru tampil sesudah diperiksa dan diaktifkan oleh admin; bukan stok langsung dari outlet.</p>
     <input id="cariLokasi" class="lokasi-cari" placeholder="Cari nama atau alamat cabang..." oninput="renderPilihanLokasi()">
     <div id="daftarLokasi"></div>
   </div>
@@ -936,152 +925,49 @@ const brandVisual={
 
 
 // Cabang berdasarkan sumber publik; dapat berubah. Hanya cabang yang dilayani sebaiknya diaktifkan.
-const DAFTAR_CABANG={
-  "Kopi Kenangan": [
-    {
-      "nama": "Mall Lippo Cikarang",
-      "alamat": "Mall Lippo Cikarang, Cikarang Selatan"
-    },
-    {
-      "nama": "BP Cikarang",
-      "alamat": "BP Cikarang, Kabupaten Bekasi"
-    },
-    {
-      "nama": "BP Jababeka Hollywood",
-      "alamat": "Jababeka, Cikarang"
-    },
-    {
-      "nama": "Living World Plaza Jababeka",
-      "alamat": "Living Plaza Jababeka, Cikarang Utara"
-    },
-    {
-      "nama": "District 1 Meikarta",
-      "alamat": "District 1 Meikarta, Cikarang Selatan"
-    },
-    {
-      "nama": "Summarecon Mall Bekasi",
-      "alamat": "Summarecon Mall Bekasi, Bekasi Utara"
-    },
-    {
-      "nama": "Ruko Grand Wisata Bekasi",
-      "alamat": "Grand Wisata, Tambun Selatan"
-    },
-    {
-      "nama": "Metropolitan Mall Bekasi",
-      "alamat": "Metropolitan Mall, Bekasi Selatan"
-    }
-  ],
-  "Tomoro Coffee": [
-    {
-      "nama": "Lippo Cikarang",
-      "alamat": "Jl. MH Thamrin No.62, Cikarang Selatan"
-    },
-    {
-      "nama": "Ruko Picadilly Lippo Cikarang",
-      "alamat": "Jl. Sriwijaya Blok B No.3, Cikarang Selatan"
-    },
-    {
-      "nama": "Sudirman Jababeka",
-      "alamat": "Ruko Sudirman Boulevard B2 No.16, Cikarang Utara"
-    },
-    {
-      "nama": "Cikarang Utara",
-      "alamat": "Jl. RE Martadinata No.20, Cikarang Utara"
-    },
-    {
-      "nama": "Living Plaza Jababeka",
-      "alamat": "Jl. Niaga Raya No.2, Cikarang Utara"
-    },
-    {
-      "nama": "Ruko Djaya Jababeka",
-      "alamat": "Ruko Djaya Blok A.1A No.2, Jababeka"
-    },
-    {
-      "nama": "Tambun City",
-      "alamat": "Jl. Sultan Hasanudin, Tambun Selatan"
-    },
-    {
-      "nama": "Mangun Jaya",
-      "alamat": "Jl. Mekarsari Tengah, Tambun Selatan"
-    },
-    {
-      "nama": "Pakuwon Mall Bekasi",
-      "alamat": "Pakuwon Mall, Bekasi Selatan"
-    }
-  ],
-  "Janji Jiwa": [
-    {
-      "nama": "Ruko Cikarang Central City",
-      "alamat": "Jl. Raya Cikarang–Cibarusah, Cikarang Selatan"
-    },
-    {
-      "nama": "Ruko Metland Cibitung",
-      "alamat": "Ruko Nagoya 2 Blok C2B No.7, Telagamurni"
-    },
-    {
-      "nama": "Ruko Karang Satria",
-      "alamat": "Vila Mutiara Gading 2 Blok D1 No.2, Tambun Utara"
-    },
-    {
-      "nama": "Delta Mas",
-      "alamat": "Ruko Palais de Paris Blok A No.18, Deltamas"
-    },
-    {
-      "nama": "Kasuari Raya",
-      "alamat": "Jl. Kasuari Raya Kav S-3, Cikarang Utara"
-    },
-    {
-      "nama": "Kihajar Cikarang Utara",
-      "alamat": "Ruko City Walk Blok 2C No.6A, Cikarang Utara"
-    },
-    {
-      "nama": "District 2 Meikarta",
-      "alamat": "District 2 Meikarta, Cikarang Selatan"
-    }
-  ],
-  "Fore Coffee": [
-    {
-      "nama": "Aeon Mall Deltamas",
-      "alamat": "AEON Mall Deltamas, Cikarang Pusat"
-    },
-    {
-      "nama": "Cikarang Festival",
-      "alamat": "Cikarang Central City, Cikarang Selatan"
-    },
-    {
-      "nama": "Living Plaza Jababeka",
-      "alamat": "Living Plaza Jababeka, Cikarang Utara"
-    },
-    {
-      "nama": "Meikarta District 1",
-      "alamat": "District 1 Meikarta, Cikarang Selatan"
-    },
-    {
-      "nama": "Vasanta Cikarang",
-      "alamat": "Ruko Tsubaki T-23, Cikarang Barat"
-    },
-    {
-      "nama": "Jatimulya Bekasi",
-      "alamat": "Jl. Raya Jatimulya No.10, Tambun Selatan"
-    },
-    {
-      "nama": "Living World Grand Wisata",
-      "alamat": "Living World Grand Wisata, Tambun Selatan"
-    },
-    {
-      "nama": "Summarecon Mall Bekasi",
-      "alamat": "Summarecon Mall Bekasi, Bekasi Utara"
-    }
-  ]
-};
+const DAFTAR_CABANG={'Kopi Kenangan':[]};
 let brandDitunda='',lokasiTerpilih='';
-function openBrand(name){
+let cabangNasionalSiap=false;
+async function muatCabangNasional(){
+ if(cabangNasionalSiap)return;
+ try{
+  const r=await fetch('/cabang-kopken.json',{cache:'no-store'});
+  if(!r.ok)throw Error('Gagal memuat cabang');
+  const j=await r.json(); DAFTAR_CABANG['Kopi Kenangan']=j.branches||[];cabangNasionalSiap=true;
+ }catch(err){
+  document.getElementById('daftarLokasi').textContent='Gagal memuat data cabang. Buka website melalui Netlify, bukan file lokal.';
+  throw err;
+ }
+}
+
+
+// Menu benar-benar per cabang. Daftar tersedia hanya berasal dari keputusan admin.
+let menuCabangAktif=new Set(),menuCabangSiap=false;
+function kunciMenu(p){return p[0]}
+function filterMenuCabang(list){return menuCabangSiap?list.filter(p=>menuCabangAktif.has(kunciMenu(p))):[]}
+async function muatMenuCabang(){
+ menuCabangSiap=false;menuCabangAktif=new Set();showCategory('all');
+ const el=document.getElementById('branchMenuInfo');
+ if(el)el.textContent='Memeriksa menu untuk cabang ini…';
+ try{
+  const r=await fetch('/.netlify/functions/menu-cabang?cabang='+encodeURIComponent(lokasiTerpilih),{cache:'no-store'});
+  if(!r.ok)throw Error('Layanan menu cabang belum dikonfigurasi');
+  const j=await r.json();
+  menuCabangAktif=new Set(Array.isArray(j.active)?j.active:[]);
+  menuCabangSiap=true;
+  if(el)el.textContent=menuCabangAktif.size?`Menu aktif di ${lokasiTerpilih}: ${menuCabangAktif.size} jenis. Ketersediaan dapat berubah; admin harus memperbarui daftar.`:`Belum ada menu yang diaktifkan untuk ${lokasiTerpilih}. Hubungi admin.`;
+ }catch(e){if(el)el.textContent='Daftar menu cabang belum tersedia atau server belum dikonfigurasi. Silakan hubungi admin.';}
+ showCategory('all');
+}
+
+async function openBrand(name){
+ if(name!=='Kopi Kenangan')return;
  brandDitunda=name;
  document.getElementById('lokasiModalTitle').textContent='Pilih Outlet '+name;
  document.getElementById('cariLokasi').value='';
  document.getElementById('lokasiModal').classList.add('terbuka');
  document.body.style.overflow='hidden';
- renderPilihanLokasi();
+ try{await muatCabangNasional();renderPilihanLokasi()}catch(e){}
 }
 function tutupModalLokasi(){
  document.getElementById('lokasiModal').classList.remove('terbuka');
@@ -1089,29 +975,32 @@ function tutupModalLokasi(){
 }
 function renderPilihanLokasi(){
  const q=document.getElementById('cariLokasi').value.trim().toLowerCase();
- const pilihan=(DAFTAR_CABANG[brandDitunda]||[]).filter(x=>(x.nama+' '+x.alamat).toLowerCase().includes(q));
+ const pilihan=(DAFTAR_CABANG[brandDitunda]||[]).filter(x=>(x.nama+' '+x.alamat+' '+(x.kota||'')).toLowerCase().includes(q));
  const tempat=document.getElementById('daftarLokasi');
  tempat.replaceChildren();
  if(!pilihan.length){const p=document.createElement('p');p.textContent='Cabang tidak ditemukan pada daftar ini. Hubungi admin jika cabang yang kamu inginkan belum ada.';tempat.appendChild(p);return;}
  pilihan.forEach((cab)=>{
   const btn=document.createElement('button');btn.type='button';btn.className='lokasi-pilihan';
   const info=document.createElement('span'),name=document.createElement('strong'),address=document.createElement('small'),tag=document.createElement('span');
-  name.textContent='📍 '+cab.nama;address.textContent=cab.alamat;tag.className='lokasi-pill';tag.textContent='Pilih →';
+  name.textContent='📍 '+cab.nama;address.textContent=(cab.kota||cab.alamat)+' · Menu belum diverifikasi';tag.className='lokasi-pill';tag.textContent='Pilih →';
   info.append(name,address);btn.append(info,tag);btn.addEventListener('click',()=>pilihCabang(cab));tempat.appendChild(btn);
  });
 }
 function pilihCabang(cab){
  lokasiTerpilih=brandDitunda+' — '+cab.nama;
  tutupModalLokasi();
+ if(Object.keys(keranjang).length){keranjang={};updateCart();showToast("Keranjang dikosongkan karena cabang berubah");}
  tampilkanBrand(brandDitunda);
+ muatMenuCabang();
 }
 function isiLokasiCheckout(){
  const pilihan=document.getElementById('outletSelect');
  const teks=document.getElementById('outlet');
  if(!pilihan||!teks||!lokasiTerpilih)return;
  pilihan.replaceChildren(new Option('Pilih cabang pengambilan',''));
- const all=Object.entries(DAFTAR_CABANG).flatMap(([brand,cabs])=>cabs.map(c=>brand+' — '+c.nama));
- for(const val of [...new Set(all)])pilihan.add(new Option(val,val));
+ // Lokasi checkout dikunci pada cabang katalog agar tidak mengirim pesanan ke cabang lain.
+ pilihan.add(new Option(lokasiTerpilih,lokasiTerpilih));
+ pilihan.disabled=true;
  pilihan.value=lokasiTerpilih;
  teks.value=lokasiTerpilih;
  teks.style.display='none';teks.required=false;
@@ -1160,7 +1049,7 @@ function showCategory(kategori){
     const list = kategori === 'all'
         ? ['coffee','noncoffee','food','bundling'].flatMap(k => data[currentBrand]?.[k] || [])
         : data[currentBrand]?.[kategori] || [];
-    renderProducts(list);
+    renderProducts(filterMenuCabang(list));
 }
 
 const gambarResmiKopiKenangan={
@@ -1339,7 +1228,7 @@ function renderProducts(list){
     let html='';
     if(!list.length){
         const namaKategori={coffee:'coffee',noncoffee:'non-coffee',food:'food',bundling:'bundling'}[kategoriAktif] || '';
-        html=`<div class="empty-menu">Menu ${namaKategori} untuk brand ini belum tersedia.</div>`;
+        html=`<div class="empty-menu">Belum ada menu ${namaKategori} yang diaktifkan admin untuk cabang ini.</div>`;
     } else {
         list.forEach((p,index)=>{
             const hargaLama=p[1]; const hargaPromo=p[2] || p[1];
@@ -1386,7 +1275,7 @@ function cariMenu(){
             ? ['coffee','noncoffee','food','bundling'].flatMap(k => data[currentBrand]?.[k] || [])
             : data[currentBrand]?.[kategoriAktif] || [];
     }
-    renderProducts(list);
+    renderProducts(filterMenuCabang(list));
 }
 
 
@@ -1467,7 +1356,7 @@ function getHargaLargeFore(){
 function bukaPopup(index){
     if(!SITE_CONFIG.orderActive){ alert('Order sedang ditutup. Silakan cek lagi nanti ya 💗'); return; }
     const p=renderedProducts[index];
-    if(!p) return;
+    if(!p || !menuCabangSiap || !menuCabangAktif.has(p[0])) return;
     kategoriProdukAktif = Object.keys(data[currentBrand] || {}).find(k => (data[currentBrand][k] || []).includes(p)) || kategoriAktif;
 
     produkAktif=p[0];
@@ -1624,6 +1513,7 @@ function hargaPopupTerpilih(){
 
 function tambahDariPopup(){
     if(!produkAktif) return;
+    if(!menuCabangSiap || !menuCabangAktif.has(produkAktif)){alert("Menu ini tidak tersedia untuk cabang yang dipilih.");return;}
 
     const food = isFoodCategory();
     const tomoro = currentBrand === "Tomoro Coffee";

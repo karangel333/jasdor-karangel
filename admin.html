@@ -6,6 +6,15 @@
 <div id="dashboard" class="hidden"><section><div class="tools"><button id="sound" class="secondary">🔔 Aktifkan alarm order</button><button id="refresh" class="secondary">↻ Perbarui</button><button id="logout" class="secondary">Keluar</button></div><p class="muted">Dashboard memeriksa pesanan baru setiap 15 detik saat halaman terbuka. Bunyi hanya aktif setelah tombol alarm ditekan; browser/HP dapat membatasi suara di latar belakang.</p><div id="message" role="status"></div></section>
 <section class="stats"><div class="stat">Total tercatat<b id="totalOrders">0</b></div><div class="stat">Menunggu<b id="pending">0</b></div><div class="stat">Jumlah lokasi<b id="locationCount">0</b></div></section>
 <section><div class="tools"><select id="filter"><option value="">Semua lokasi</option></select><select id="statusFilter"><option value="">Semua status</option><option>Menunggu konfirmasi</option><option>Diproses</option><option>Selesai</option><option>Dibatalkan</option></select><input id="search" placeholder="Cari nama / produk / nomor pesanan"></div></section>
+
+<section id="menuAdmin">
+  <h2>☕ Verifikasi menu Kopi Kenangan per cabang</h2>
+  <p class="muted">Menu baru ditampilkan di website pelanggan setelah kamu aktifkan untuk cabang tersebut. Periksa daftar menu pada aplikasi/pesan resmi cabang terlebih dahulu. Jangan centang menu yang belum terkonfirmasi. Ini pengaturan manual, bukan stok real-time.</p>
+  <div class="tools"><select id="brandMenu" aria-label="Pilih brand"></select><select id="cabangMenu" aria-label="Pilih cabang"></select><input id="cariMenuAdmin" placeholder="Cari nama menu..."></div>
+  <div class="tools" style="margin-top:10px"><button id="hapusSemuaMenu" class="secondary">Kosongkan pilihan</button><button id="simpanMenu">Simpan menu cabang</button></div>
+  <p id="menuInfo" class="muted" role="status"></p>
+  <div id="menuList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:7px;max-height:390px;overflow:auto;padding:10px"></div>
+</section>
 <p class="muted">Pilih lokasi pada filter untuk melihat produk apa saja yang dipesan di lokasi tersebut. Lokasi tanpa pesanan tidak muncul di daftar.</p><div id="orders"></div></div></main>
 <script>
 let adminToken='',orders=[],initial=true,soundOn=false,audioContext=null;
@@ -16,6 +25,41 @@ async function request(method='GET',body){const r=await fetch(api,{method,header
 function beep(){if(!soundOn)return;try{const C=window.AudioContext||window.webkitAudioContext;audioContext ||=new C();audioContext.resume();[0,.25,.5,.85,1.1].forEach((t,i)=>{const o=audioContext.createOscillator(),g=audioContext.createGain();o.type='sine';o.frequency.value=i%2?720:920;g.gain.setValueAtTime(.0001,audioContext.currentTime+t);g.gain.exponentialRampToValueAtTime(.18,audioContext.currentTime+t+.02);g.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+t+.18);o.connect(g).connect(audioContext.destination);o.start(audioContext.currentTime+t);o.stop(audioContext.currentTime+t+.20)});}catch(e){console.warn(e)}}
 async function load(){if(!adminToken)return;try{const data=await request();const next=data.orders||[];const known=new Set(orders.map(o=>o.id));if(!initial&&next.some(o=>!known.has(o.id))){beep();$('message').textContent='🔔 Ada pesanan baru!';}else $('message').textContent='Diperbarui '+new Date().toLocaleTimeString('id-ID');orders=next;initial=false;render();}catch(e){$('message').textContent=e.message;}}
 function render(){const locations=[...new Set(orders.map(o=>o.lokasi))].sort();const chosen=$('filter').value;$('filter').innerHTML='<option value="">Semua lokasi</option>'+locations.map(l=>`<option value="${html(l)}">${html(l)}</option>`).join('');$('filter').value=locations.includes(chosen)?chosen:'';$('totalOrders').textContent=orders.length;$('pending').textContent=orders.filter(o=>o.status==='Menunggu konfirmasi').length;$('locationCount').textContent=locations.length;const term=$('search').value.toLowerCase(),status=$('statusFilter').value;const list=orders.filter(o=>(!$('filter').value||o.lokasi===$('filter').value)&&(!status||o.status===status)&&[o.nama,o.nomor,o.lokasi,...o.items.map(i=>i.nama)].join(' ').toLowerCase().includes(term));const groups=Object.groupBy?Object.groupBy(list,o=>o.lokasi):list.reduce((a,o)=>{(a[o.lokasi]??=[]).push(o);return a},{});$('orders').innerHTML=Object.keys(groups).sort().map(loc=>`<section class="location"><h2>📍 ${html(loc)} <span class="muted">(${groups[loc].length} pesanan)</span></h2>${groups[loc].map(o=>`<article class="order"><div class="heading"><strong>${html(o.nama)} — ${html(o.nomor)}</strong><span class="status">${html(o.status)}</span></div><p class="muted">${new Date(o.createdAt).toLocaleString('id-ID')} · Jam ambil ${html(o.jam||'-')}</p><ul>${o.items.map(i=>`<li>${html(i.nama)} × ${Number(i.qty)} — ${rupiah(Number(i.harga)*Number(i.qty))}${i.varian?'<div class="muted">'+html(i.varian)+'</div>':''}${i.catatan?'<div class="muted">Catatan: '+html(i.catatan)+'</div>':''}</li>`).join('')}</ul><div class="tools"><strong>${rupiah(o.total)}</strong><select data-id="${html(o.id)}" aria-label="Ubah status pesanan">${['Menunggu konfirmasi','Diproses','Selesai','Dibatalkan'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}</select></div></article>`).join('')}</section>`).join('')||'<section>Belum ada pesanan untuk filter ini.</section>';document.querySelectorAll('select[data-id]').forEach(e=>e.addEventListener('change',async()=>{try{await request('PATCH',{id:e.dataset.id,status:e.value});await load()}catch(err){alert(err.message)}}));}
-$('loginForm').onsubmit=async e=>{e.preventDefault();adminToken=$('token').value.trim();initial=true;try{await request();$('login').classList.add('hidden');$('dashboard').classList.remove('hidden');await load();}catch(err){$('loginError').textContent=err.message;adminToken=''}};
+
+let catalogAdmin=null,aktifCabang=new Set(),brandCabangAktif='';
+async function siapkanAdminMenu(){
+ try{const r=await fetch('/catalog-admin.json');if(!r.ok)throw Error('Data katalog tidak ditemukan');catalogAdmin=await r.json();const bc=await fetch('/cabang-kopken.json');if(!bc.ok)throw Error('Daftar cabang Kopi Kenangan tidak ditemukan');const bj=await bc.json();catalogAdmin.branches={'Kopi Kenangan':bj.branches||[]};
+  $('brandMenu').replaceChildren(...Object.keys(catalogAdmin.branches).map(n=>new Option(n,n)));$('brandMenu').onchange=isiCabang;
+  $('cabangMenu').onchange=ambilMenuCabang;$('cariMenuAdmin').oninput=renderMenuAdmin;
+  
+  $('hapusSemuaMenu').onclick=()=>{aktifCabang.clear();renderMenuAdmin()};
+  $('simpanMenu').onclick=simpanMenuCabang;
+  isiCabang();
+ }catch(err){$('menuInfo').textContent=err.message}
+}
+function isiCabang(){
+ const brand=$('brandMenu').value;
+ $('cabangMenu').replaceChildren(...(catalogAdmin.branches[brand]||[]).map(b=>new Option(b.nama+' — '+b.alamat,brand+' — '+b.nama)));
+ ambilMenuCabang();
+}
+async function ambilMenuCabang(){
+ const cabang=$('cabangMenu').value;brandCabangAktif=cabang;aktifCabang=new Set();$('menuInfo').textContent='Memuat daftar untuk '+cabang+'…';renderMenuAdmin();
+ try{const j=await requestMenu('GET',cabang);if(brandCabangAktif!==cabang)return;aktifCabang=new Set(j.active||[]);$('menuInfo').textContent=aktifCabang.size+' menu diaktifkan admin (tidak otomatis terverifikasi stok). Terakhir diubah: '+(j.updatedAt?new Date(j.updatedAt).toLocaleString('id-ID'):'belum pernah')}
+ catch(err){$('menuInfo').textContent='Gagal memuat: '+err.message}renderMenuAdmin();
+}
+function renderMenuAdmin(){
+ if(!catalogAdmin)return;
+ const brand=$('brandMenu').value,query=$('cariMenuAdmin').value.trim().toLowerCase();const list=$('menuList');list.replaceChildren();
+ for(const [kategori,names] of Object.entries(catalogAdmin.menus[brand]||{}))for(const nama of names){
+  if(!nama.toLowerCase().includes(query))continue;
+  const label=document.createElement('label');label.style.cssText='padding:10px;background:#fff7fb;border:1px solid #efdeea;border-radius:10px;display:flex;gap:8px;align-items:center;font-size:13px';
+  const check=document.createElement('input');check.type='checkbox';check.checked=aktifCabang.has(nama);check.addEventListener('change',()=>{check.checked?aktifCabang.add(nama):aktifCabang.delete(nama)});
+  const span=document.createElement('span');span.textContent=nama+' ('+kategori+')';label.append(check,span);list.appendChild(label);
+ }
+}
+async function requestMenu(method,cabang,active){const r=await fetch('/.netlify/functions/menu-cabang?cabang='+encodeURIComponent(cabang),{method,headers:{Authorization:'Bearer '+adminToken,...(method==='PUT'?{'Content-Type':'application/json'}:{})},...(method==='PUT'?{body:JSON.stringify({active})}:{})});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.error||'Server tidak merespons');return j}
+async function simpanMenuCabang(){const cabang=$('cabangMenu').value;if(!cabang)return;$('simpanMenu').disabled=true;$('menuInfo').textContent='Menyimpan…';try{await requestMenu('PUT',cabang,[...aktifCabang]);$('menuInfo').textContent='✓ '+aktifCabang.size+' menu aktif tersimpan untuk '+cabang}catch(err){$('menuInfo').textContent='Gagal menyimpan: '+err.message}finally{$('simpanMenu').disabled=false}}
+
+$('loginForm').onsubmit=async e=>{e.preventDefault();adminToken=$('token').value.trim();initial=true;try{await request();$('login').classList.add('hidden');$('dashboard').classList.remove('hidden');await load();await siapkanAdminMenu();}catch(err){$('loginError').textContent=err.message;adminToken=''}};
 $('sound').onclick=()=>{soundOn=!soundOn;$('sound').textContent=soundOn?'🔔 Alarm aktif (tes bunyi)':'🔕 Aktifkan alarm order';if(soundOn)beep()};$('refresh').onclick=load;$('logout').onclick=()=>{adminToken='';orders=[];$('dashboard').classList.add('hidden');$('login').classList.remove('hidden');$('token').value=''};['filter','statusFilter','search'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',render));setInterval(()=>{if(adminToken&&!document.hidden)load()},15000);
 </script></body></html>

@@ -1,0 +1,10 @@
+JASDOR KARANGEL — KOPI KENANGAN LINTAS INDONESIA
+
+Daftar awal: 247 cabang di 24 kelompok wilayah (berdasarkan direktori resmi https://kopikenangan.com/outlets, diakses 26 Oktober 2026).
+PENTING: daftar ini BELUM LENGKAP. Situs resmi menyebut 1.289 outlet di 141 kota. Beberapa outlet terdaftar di luar daftar awal ini. Nama dan status operasional bisa berubah.
+
+Menu tiap cabang BELUM bisa dipastikan dengan daftar outlet resmi. Semua menu mula-mula nonaktif.
+Dari admin.html: pilih cabang dan aktifkan HANYA produk yang sudah kamu periksa melalui aplikasi Kopi Kenangan (memilih outlet yang tepat) atau konfirmasi langsung outlet. Jangan set semuanya aktif.
+Pilih cabang dalam situs pelanggan, kemudian lihat menu yang admin sudah aktifkan. Untuk melengkapi daftar cabang, perbarui cabang-kopken.json (ikuti susunan JSON).
+
+PERHATIAN: Konfigurasi Netlify Blobs dan JASDOR_ADMIN_TOKEN masih wajib untuk sinkronisasi menu/pesanan. ZIP harus diekstrak dan seluruh isi diunggah ke root repository GitHub yang dipakai Netlify. Harga pada katalog berasal dari data sebelumnya, BUKAN harga resmi setiap cabang. Uji checkout sebelum menerima pembayaran.
