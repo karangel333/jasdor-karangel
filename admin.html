@@ -6,7 +6,7 @@
 <div id="dashboard" class="hidden"><section><div class="tools"><button id="sound" class="secondary">🔔 Aktifkan alarm order</button><button id="refresh" class="secondary">↻ Perbarui</button><button id="logout" class="secondary">Keluar</button></div><p class="muted">Dashboard memeriksa pesanan baru setiap 15 detik saat halaman terbuka. Bunyi hanya aktif setelah tombol alarm ditekan; browser/HP dapat membatasi suara di latar belakang.</p><div id="message" role="status"></div></section>
 <section class="stats"><div class="stat">Total tercatat<b id="totalOrders">0</b></div><div class="stat">Menunggu<b id="pending">0</b></div><div class="stat">Jumlah lokasi<b id="locationCount">0</b></div></section>
 <section><div class="tools"><select id="filter"><option value="">Semua lokasi</option></select><select id="statusFilter"><option value="">Semua status</option><option>Menunggu konfirmasi</option><option>Diproses</option><option>Selesai</option><option>Dibatalkan</option></select><input id="search" placeholder="Cari nama / produk / nomor pesanan"></div></section>
-<div id="orders"></div></div></main>
+<p class="muted">Pilih lokasi pada filter untuk melihat produk apa saja yang dipesan di lokasi tersebut. Lokasi tanpa pesanan tidak muncul di daftar.</p><div id="orders"></div></div></main>
 <script>
 let adminToken='',orders=[],initial=true,soundOn=false,audioContext=null;
 const $=id=>document.getElementById(id);const rupiah=x=>'Rp '+Number(x||0).toLocaleString('id-ID');
